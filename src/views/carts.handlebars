@@ -1,4 +1,3 @@
-<a href="http://localhost:8080/products"><button class="button is-danger mt-3">Continuar comprando</button></a>
 <h1 class="title__cartpage">CHECKOUT</h1>
 {{#if cart.length}}
   <table class="table__cart">
@@ -21,9 +20,8 @@
     </tbody>
   </table>
   <button class="button is-danger mt-3" onclick="clearCart()">Vaciar carrito</button>
-{{!--   <button type="button" class="button is-danger mt-3" onclick="purchaseCart('{{cart.result.payload._id}}')">Confirmar Compra</button>
-<button onclick="finishPurchase()" class="btn btn-danger">FINALIZAR COMPRA</button> --}}
-<a href="/checkout" class="button is-danger mt-3">CONTINUAR</a>
+<a href="/checkout" class="button is-danger mt-3">Finalizar compra</a>
+<a href="http://localhost:8080/products"><button class="button is-danger mt-3">Continuar comprando</button></a>
 
 {{else}}
   <p>No products in the cart</p>

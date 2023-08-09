@@ -35,7 +35,8 @@ class CartController{
     async deletOneProductbyCart  (req, res)  {
         try {
         const { cid, pid } = req.params;
-        const cart = await serviceCarts.removeProductFromCart(cid, pid);
+        const pQuantity = req.body.quantity; 
+        const cart = await serviceCarts.deleteProductFromCart(cid, pid, pQuantity);
         res
             .status(200)
             .json({ status: "success", message: "Product removed from cart", cart });
@@ -71,11 +72,10 @@ class CartController{
             const cid = req.params.cid;
             console.log(cid)
             const cart = await serviceCarts.clearCartService(cid);
-                    res.status(200).json(({ status: "success", message: "Cart cleared successfully" }), cart);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ status: "error", message: "Internal server error" });
-        }
+            res.status(200).json(cart);
+        } catch (err) {
+            res.status(404).json({ Error: `${err}` });
         };
+    };
 }
 export default CartController;

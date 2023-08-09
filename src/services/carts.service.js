@@ -2,7 +2,9 @@ import CartsDAO from '../DAO/classes/cart.dao.js';
 import ProductsDAO from '../DAO/classes/product.dao.js'; 
 import ProductModel from '../DAO/models/product.model.js'
 import CartModel from '../DAO/models/cart.model.js';
+import ServiceProducts from './products.service.js';
 
+const serviceProducts = new ServiceProducts();
 const cartsDAO = new CartsDAO();
 const productsDAO = new ProductsDAO();
 class ServiceCarts {
@@ -44,15 +46,14 @@ class ServiceCarts {
     }
   }
 
-  async updateCartService() {
+  async updateCartService(cid, cartUpdate) {
     try {
-      const cart = await cartsDAO.updateCart();
-      return cart;
+      const updatedCart  = await cartsDAO.updateCart({ _id: cid }, {products: cartUpdate});
+      return updatedCart ;
   } catch (error) {
       throw new Error('Error updating cart in database');
+    }
   }
-}
-
   async updateProductQuantity(cartId, productId, quantity) {
     try {
       const cart = await cartsDAO.getCart(cartId);
@@ -65,32 +66,32 @@ class ServiceCarts {
       return cart;
   } catch (error) {
       throw new Error('Error updating product quantity in cart');
-  }
-}
-
-  async removeProductFromCart(cartId, productId) {
-    try {
-      const cart = await cartsDAO.getCart(cartId);
-      const productIndex = cart.products.findIndex
-        ((p) => p.product.toString() === productId);
-        if (productIndex === -1) {
-            throw new Error('Product not found in cart');
-        }
-        cart.products.splice(productIndex, 1);
-        await cart.save();
-        return cart;
-    } catch (error) {
-        throw new Error('Error removing product from cart');
     }
   }
+  async deleteProductFromCart(cartId, productId, quantityP) {
+    try {
+      //const productToCart = await ProductModel.findById(productId);
+      const productToCart = await serviceProducts.getProductById(productId);
+      productToCart ? productToCart : (() => { new Error  ("The product does not exist in the database, please check.") })();
+      const cart = await CartModel.findById(cartId);
+      cart ?  cart : (() => {   throw Error (`No cart with ID ${cartId} was found.`) })();      
+      const productIndex = cart.products.findIndex((p) => p.product.toString() === productId);
+      productIndex === -1 ? "" : cart.products[productIndex].quantity--;
+      quantityP || cart.products[productIndex].quantity == 0 ? cart.products[productIndex].product == productId ?
+      cart.products.splice(productIndex, 1) :  ""  : "";
+      const updatedCart = await cartsDAO.deleteProductFromCart( { _id: cartId }, cart );            
+      return updatedCart;
+    } catch (error) {
+      throw (`Error deleting product from cart. ${err}`);
+    }
+  };
   async clearCartService(cid) {
-      try {
-        const emptyCart = await cartsDAO.emptyCart( { _id: cid } );      
-        return emptyCart;      
-      }catch (error) {
-        throw (`The cart was not found when an attempt was made to empty`);
-      };
-    };  
+    try {
+      const emptyCart = await cartsDAO.emptyCart( { _id: cid } );      
+      return emptyCart;      
+    }catch (error) {
+      throw (`Failed to find cart. ${err}`);
+    }
+  };
 };
-
 export default ServiceCarts;
