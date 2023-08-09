@@ -20,7 +20,7 @@
     </tbody>
   </table>
   <button class="button is-danger mt-3" onclick="clearCart()">Vaciar carrito</button>
-<a href="/checkout" class="button is-danger mt-3">Finalizar compra</a>
+<a href="http://localhost:8080/carts/{{userCartId}}/purchase" class="button is-danger mt-3">Finalizar compra</a>
 <a href="http://localhost:8080/products"><button class="button is-danger mt-3">Continuar comprando</button></a>
 
 {{else}}
@@ -29,3 +29,4 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/cart.js"></script>
+<script src="/js/profile.js"></script>

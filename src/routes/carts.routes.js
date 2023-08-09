@@ -1,8 +1,9 @@
 import express from 'express';
+import { isUser, isLogged, isNotAdmin, isCartOwner } from "../middleware/auth.js"
 import CartController from "../controller/carts.controller.js";
 const cartController = new CartController();
+import { ticketsController } from '../controller/ticket.controller.js';
 const cartsRouter = express.Router()
-import { isUser, isLogged, isNotAdmin, isCartOwner } from "../middleware/auth.js"
 
 cartsRouter.post("/", cartController.createCart);
 cartsRouter.get("/:cid", cartController.getById);
@@ -11,10 +12,11 @@ cartsRouter.put("/:cid", cartController.updateCart);
 /* cartsRouter.delete("/:cid/products/:pid", cartController.deletOneProductbyCart); */
 /* cartsRouter.delete("/:cid", cartController.clearCart); */
 cartsRouter.delete('/carts/delete/:cid/product/:pid', cartController.deletOneProductbyCart);
-// VACIO CARRITO SEGÚN ID INDICADO
 cartsRouter.delete('/carts/empty/:cid', cartController.clearCart);
 
-
+cartsRouter.get("/:cid/purchase", isLogged, isUser, ticketsController.checkOut);
+cartsRouter.post("/:cid/purchase", isLogged, isUser, ticketsController.addTicket); 
+cartsRouter.get("/purchase/:cid", isLogged, isUser, ticketsController.addTicket);
 
 export default cartsRouter;
 

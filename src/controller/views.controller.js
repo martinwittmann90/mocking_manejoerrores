@@ -66,6 +66,8 @@ class ViewsController{
         try {
             const { cid } = req.params;
             const cart = await dbCarts.getCartService(cid);
+            const user = req.session.user;
+            const userCartId = user.cartID;
             const simplifiedCart = cart.cartProducts.map((item) => {
                 if (item.product) {
                     return {
@@ -76,7 +78,7 @@ class ViewsController{
                 }
                 return null; 
                 });
-                res.render("carts", { cart: simplifiedCart });
+                res.render("carts", { cart: simplifiedCart, userCartId });
             } catch (error) {
                 next(error);
             }

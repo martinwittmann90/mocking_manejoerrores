@@ -27,7 +27,7 @@ class TicketsController {
         const userCartId = user.cartID;
         const cartProducts = await serviceCarts.getCartService(userCartId);
         const ticketPreview = await serviceTickets.stockCartProductsForTicket(userCartId);
-        return res.render('tickets', { user, cartProducts,ticketPreview });
+        return res.render('tickets', { user, cartProducts,ticketPreview, userCartId });
         }catch (err) {
         res.status(500).json("Error");
         };
