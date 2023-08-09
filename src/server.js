@@ -82,8 +82,8 @@ app.use("/chat", chatRouter);
 app.use('/carts', cartsRouter);
 app.use("/auth/profile", sessionsRouter);
 app.use("/", messageandmailRouter);
+app.use('/', mockRouter);
 /*-------END POINTS-------*/
-app.use('/api', mockRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use("/api/sessions", sessionsRouter);
