@@ -11,22 +11,21 @@ import fetch from 'node-fetch';
 const localStrategy = local.Strategy;
 
 import ServiceCarts from '../services/carts.service.js'
-const dbCarts = new ServiceCarts();
+const serviceCarts = new ServiceCarts();
 
 export default function initPassport() {
-
     passport.use("register", new localStrategy({
         passReqToCallback: true,
         usernameField: "email",
     }, async (req, username, password, done) => {
         try {
-            const { email, firstName, lastName, age, role } = req.body;
+            const { email, firstName, lastName, age } = req.body;
             let user = await UserModel.findOne({ email: username });
             if (user) {
                 console.log("User already exists");
                 return done(null, false);
             }
-            const newCart = await dbCarts.createOne();
+            const newCart = await serviceCarts.createOne();
             const cartID = newCart.result.payload._id.toString();
             
             const newUser = {
@@ -91,7 +90,7 @@ export default function initPassport() {
             console.log(profile);
             let user = await UserModel.findOne({ email: profile.email });
             if (!user) {
-                const newCart = await dbCarts.createOne();
+                const newCart = await serviceCarts.createOne();
                 const cartID = newCart.result.payload._id.toString();
                 const newUser = {
                     email: profile.email,

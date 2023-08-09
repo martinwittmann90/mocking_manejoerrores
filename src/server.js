@@ -12,6 +12,7 @@ import cartsRouter from "./routes/carts.routes.js";
 import chatRouter from "./routes/chat.routes.js"
 import sessionsRouter from "./routes/sessions.routes.js";
 import mockRouter from './routes/mock.routes.js';
+import messageandmailRouter from './routes/messageandmail.routes.js'
 import websockets from "./config/sockets.config.js";
 import { connectMongo } from "./config/configMongoDB.js";
 import cookieParser from "cookie-parser";
@@ -80,6 +81,7 @@ app.use('/products', viewsRouter);
 app.use("/chat", chatRouter);
 app.use('/carts', cartsRouter);
 app.use("/auth/profile", sessionsRouter);
+app.use("/", messageandmailRouter);
 /*-------END POINTS-------*/
 app.use('/api', mockRouter);
 app.use('/api/products', productsRouter);
