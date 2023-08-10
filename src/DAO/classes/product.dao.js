@@ -1,22 +1,22 @@
 import ProductModel from "../models/product.model.js"
 
 class ProductsDAO {
-  async getAllProd(page, limit, sort, query) {
+  async getAllProductsDao(filter, options) {
     try {
-        const filter = query
-        ? { title: { $regex: query.title, $options: "i" } }
-        : {};
-        const products = await ProductModel.paginate(filter, {
-            limit: limit || 5,
-            page: page || 1,
-            sort: sort === "desc" ? "-price" : "price",
-            lean: true,
-          });
-        return products;
-    } catch (error) {
-        throw error;
+      const products = await ProductModel.paginate(filter, options);
+      return products;
+    } catch (err) {
+      throw err;
     }
+  }
+  async getProductById(id) {
+    try {
+      const product = await ProductModel.find({ _id: id });
+      return product;
+    } catch (err) {
+        throw (`No se encontró el producto.`);            
     }
+};
   async createOneProduct(){
     const product = ProductModel.create();
     return product;

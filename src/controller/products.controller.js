@@ -1,11 +1,13 @@
 import ServiceProducts from "../services/products.service.js";
-const dbProducts = new ServiceProducts();
-
+import CustomError from "../error/customError.js";
+import { customErrorMsg } from "../error/customErrorMessage.js";
+import EErros from "../error/enum.js";
+const serviceProducts = new ServiceProducts();
 class ProductsController{
     async getAll(req, res)  {
         try {
             const { limit, page, sort, query } = req.query;
-            const products = await dbProducts.getAllProducts(limit, page, sort, query);
+            const products = await serviceProducts.getAllProducts(limit, page, sort, query);
             return res.status(200).json({
                 status: 'success',
                 msg: 'Products retrieved',
@@ -17,7 +19,7 @@ class ProductsController{
     async getbyId (req, res) {
     try {
         const productId = req.params.id;
-        const product = await dbProducts.getProductById(productId);
+        const product = await serviceProducts.getProductById(productId);
         if (!product) {
             return res.status(404).json({
             status: 'error',
@@ -38,7 +40,7 @@ class ProductsController{
     async createOne(req, res) {
     try {
         const productData = req.body;
-        const createdProduct = await dbProducts.createProduct(productData);
+        const createdProduct = await serviceProducts.createProduct(productData);
         return res.status(201).json({
             status: 'success',
             msg: 'Product created',
@@ -56,7 +58,7 @@ class ProductsController{
     try {
         const productId = req.params.id;
         const productData = req.body;
-        const updatedProduct = await dbProducts.updateProduct(productId, productData);
+        const updatedProduct = await serviceProducts.updateProduct(productId, productData);
         if (!updatedProduct) {
             return res.status(404).json({
                 status: 'error',
@@ -75,7 +77,7 @@ class ProductsController{
     async deletOne  (req, res)  {
         try {
             const productId = req.params.id;
-            const deletedProduct = await dbProducts.deleteProduct(productId);
+            const deletedProduct = await serviceProducts.deleteProduct(productId);
             if (!deletedProduct) {
                 return res.status(404).json({
                     status: 'error',

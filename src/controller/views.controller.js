@@ -9,59 +9,59 @@ const serviceProducts = new ServiceProducts();
 const serviceCarts = new ServiceCarts();
 
 class ViewsController{
-    async getAll (req, res){
-        try{
-            const { page, limit, sort, query }= req.query;
-            const queryResult = await serviceProducts.getAllProducts(page, limit, sort, query);
-            const {docs, ...paginationInfo} = queryResult;
-            const productsVisualice = docs.map((product) => {
-                return {
-                    _id: product._id.toString(),
-                    title: product.title,
-                    description: product.description,
-                    price: product.price,
-                    thumbnail: product.thumbnail,
-                    code: product.code,
-                    stock: product.stock,
-                    category: product.category,
-                    status: product.status              
-                }
-            });
-            const response = {
-                status: 'success',
-                payload: productsVisualice,
-                totalPages: paginationInfo.totalPages,
-                prevPage: paginationInfo.prevPage,
-                nextPage: paginationInfo.nextPage,
-                page: parseInt(paginationInfo.page),
-                hasPrevPage: paginationInfo.hasPrevPage,
-                hasNextPage: paginationInfo.hasNextPage,
-            };
-            const prevPage = parseInt(page) - 1;
-            response.hasPrevPage ? response.prevLink = `localhost:8080/products/?page=${prevPage}&limit=${limit}&sort=${sort}` : response.prevLink = null;
-            const nextPage = parseInt(page) + 1;
-            response.hasNextPage ? response.nextLink = `localhost:8080/products/?page=${nextPage}&limit=${limit}&sort=${sort}` : response.nextLink = null;
-            if (parseInt(page) > paginationInfo.totalPages || parseInt(page) < 1) {
-                throw new Error('The requested page does not exist');
+  async getAll(req, res) {
+    try{
+        const { page, limit, sort, query }= req.query;
+        const queryResult = await serviceProducts.getAllProducts(page, limit, sort, query);
+        const {docs, ...paginationInfo} = queryResult;
+        const productsVisualice = docs.map((product) => {
+            return {
+                _id: product._id.toString(),
+                title: product.title,
+                description: product.description,
+                price: product.price,
+                thumbnail: product.thumbnail,
+                code: product.code,
+                stock: product.stock,
+                category: product.category,
+                status: product.status              
             }
-            const nextPageUrl = `/?page=${nextPage}&limit=${limit}&sort=${sort}`;
-            const productsContext = {
-            session: req.session.user,
-            productsVisualice: productsVisualice,
-            paginationInfo: paginationInfo,
-            nextPageUrl: nextPageUrl,
-            sort: sort,
-            query: query
+        });
+        const response = {
+            status: 'success',
+            payload: productsVisualice,
+            totalPages: paginationInfo.totalPages,
+            prevPage: paginationInfo.prevPage,
+            nextPage: paginationInfo.nextPage,
+            page: parseInt(paginationInfo.page),
+            hasPrevPage: paginationInfo.hasPrevPage,
+            hasNextPage: paginationInfo.hasNextPage,
         };
-        res.render('products', productsContext);
-        } catch(error) {
-            console.error(error);
-            return res.status(400).json({
-            status: 'error',
-            msg: error.message,
-            });
+        const prevPage = parseInt(page) - 1;
+        response.hasPrevPage ? response.prevLink = `localhost:8080/products/?page=${prevPage}&limit=${limit}&sort=${sort}` : response.prevLink = null;
+        const nextPage = parseInt(page) + 1;
+        response.hasNextPage ? response.nextLink = `localhost:8080/products/?page=${nextPage}&limit=${limit}&sort=${sort}` : response.nextLink = null;
+        if (parseInt(page) > paginationInfo.totalPages || parseInt(page) < 1) {
+            throw new Error('The requested page does not exist');
         }
+        const nextPageUrl = `/?page=${nextPage}&limit=${limit}&sort=${sort}`;
+        const productsContext = {
+        session: req.session.user,
+        productsVisualice: productsVisualice,
+        paginationInfo: paginationInfo,
+        nextPageUrl: nextPageUrl,
+        sort: sort,
+        query: query
+    };
+    res.render('products', productsContext);
+    } catch(error) {
+        console.error(error);
+        return res.status(400).json({
+        status: 'error',
+        msg: error.message,
+        });
     }
+}
     async getCardbyId(req, res,next)  {
         try {
             const { cid } = req.params;
@@ -128,10 +128,13 @@ class ViewsController{
           category: product.category,
         };
         res.render("product", { product: productSimplificado });
-      } catch (error) {
-        next(error);
-      }
-    };
+      } catch (err) {
+        res.status(err.status || 500).json({
+            status: "error",
+            payload: err.message,
+        });
+        }
+    }
 
     async realTimeProducts (req, res) {
     try{

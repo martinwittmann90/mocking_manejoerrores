@@ -14,7 +14,6 @@ const productschema = new mongoose.Schema({
   { versionKey: false });
 
 productschema.plugin(mongoosePaginate);
-
 const ProductModel  = mongoose.model('products',productschema);
 
 export default ProductModel;

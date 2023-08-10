@@ -1,33 +1,61 @@
 import ProductsDAO from "../DAO/classes/product.dao.js";
 const productsDAO = new ProductsDAO();
-
+import ProductModel from "../DAO/models/product.model.js";
 import EErros  from "../error/enum.js";
-import  CustomError  from "../error/customError.js";
+import CustomError  from "../error/customError.js";
+import {customErrorMsg} from "../error/customErrorMessage.js";
+
 class ServiceProducts {
-    async getAllProducts() {
+    async getAllProducts(page, limit, sort, query) {
         try {
-            const products = await productsDAO.getAllProd();
+            const filter = query
+            ? { title: { $regex: query.title, $options: "i" } }
+            : {};
+            const options = {
+            limit: limit || 5,
+            page: page || 1,
+            sort: sort === "desc" ? "-price" : "price",
+            lean: true,
+            };
+            const products = await productsDAO.getAllProductsDao(filter, options);
             return products;
-        } catch (error) {
-            throw new Error(`Error searching for products.`);
+        } catch (err) {
+            throw err;
         }
-    }
-    async getProductById(productId) {
+        }
+    async getProductById(id) {
         try {
-            const one = await productsDAO.getProduct(productId);
-            return one;
-        } catch (error) {
-            throw new Error (`The product with the following id number was not found: ${productId}.`);
+            const product = await productsDAO.getProductById( { _id: id } );
+            return product;
+        } catch (err) {
+            throw (`No se encontró producto de id ${id}.`);
         }
-    }
+    };
     async createProduct(productData) {
         try {
+            const { title, description, price, thumbnail, code, stock, category } = productData;
+            if (!title || !description || !price || !thumbnail || !code || !stock || !category) {
+                return CustomError.createError({
+                    name: 'Validation Error',
+                    message: 'Wrong format.',
+                    code: EErros.INVALID_TYPES_ERROR,
+                    cause: customErrorMsg.generateProductErrorInfo(productData),
+                    });
+                }
+            if (await productsDAO.getProductById(code, true)) {
+                return CustomError.createError({
+                    name: 'Validation Error',
+                    message: 'Product alredy exists.',
+                    code: EErros.PRODUCT_ALREADY_EXISTS,
+                    cause: customErrorMsg.generateProductoErrorAlredyExists(productData),
+                    });
+                }
             const newProd = await productsDAO.createOneProduct(productData);
             return newProd;
         } catch (error) {
             throw CustomError.createError({
                 name: 'When creating product',
-                message: err,
+                message: "err",
                 code: EErros.ADD_PRODUCT_ERR
             });
         }
