@@ -11,13 +11,9 @@ class ProductsController{
                 msg: 'Products retrieved',
                 payload: products,
             });
-        } catch (error) {
-            console.error(error);
-            return res.status(400).json({
-            status: 'error',
-            msg: error.message,
-            });
-    }};
+        }  catch (err) {
+            res.status(500).json({ Error: `${err}` });
+        }};
     async getbyId (req, res) {
     try {
         const productId = req.params.id;
@@ -72,13 +68,10 @@ class ProductsController{
             msg: 'Product updated',
             payload: updatedProduct,
         });
-    } catch (error) {
-        console.error(error);
-        return res.status(400).json({
-        status: 'error',
-        msg: error.message,
-        });
-    }}
+    } catch (err) {
+        res.status(500).json({ Error: `${err}` });
+    }
+    };
     async deletOne  (req, res)  {
         try {
             const productId = req.params.id;
@@ -94,12 +87,8 @@ class ProductsController{
                 msg: 'Product deleted',
                 payload: deletedProduct,
             });
-        } catch (error) {
-            console.error(error);
-            return res.status(400).json({
-            status: 'error',
-            msg: error.message,
-            });
-    }};
+        }  catch (err) {
+            res.status(500).json({ Error: `${err}` });
+        }};
 }
 export const productsController = new ProductsController(); 

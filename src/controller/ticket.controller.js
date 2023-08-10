@@ -17,8 +17,7 @@ class TicketsController {
         await serviceTickets.addTicket(purchaser, ticket, totalCart);
         return res.render('ticketsdone', { ticket, totalCart, purchaser });      
       }catch (err) {
-        console.error("Error en addTicket:", err);
-        res.status(500).json("Error addticket");
+        res.status(500).json({ Error: `${err}` });
       };
   };
   async checkOut(req, res) {  
@@ -29,7 +28,7 @@ class TicketsController {
         const ticketPreview = await serviceTickets.stockCartProductsForTicket(userCartId);
         return res.render('tickets', { user, cartProducts,ticketPreview, userCartId });
         }catch (err) {
-        res.status(500).json("Error");
+          res.status(500).json({ Error: `${err}` });
         };
     };
 };

@@ -35,7 +35,6 @@ class MailController {
       console.log(result);
       return 'Email sent';
     } catch (error) {
-      console.error(error);
       throw new Error('Failed to send email');
     }
   }

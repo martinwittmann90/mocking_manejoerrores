@@ -7,6 +7,7 @@ import ServiceProducts from './products.service.js';
 const serviceProducts = new ServiceProducts();
 const cartsDAO = new CartsDAO();
 const productsDAO = new ProductsDAO();
+
 class ServiceCarts {
   async createOne() {
     const cartCreated = await cartsDAO.createCart({});
@@ -16,7 +17,7 @@ class ServiceCarts {
   async getCartService(cartId) {
     const cart = await cartsDAO.getCart(cartId);
     if (!cart) {
-      throw new Error("Cart not found");
+      throw new Error(`Error finding cart. ${err}`);
     }
     return cart;
   }
@@ -42,7 +43,7 @@ class ServiceCarts {
       await cart.save();
       return cart;
     } catch (error) {
-      throw error;
+      throw new Error (`Error adding product to cart. ${err}`);
     }
   }
 
@@ -51,7 +52,7 @@ class ServiceCarts {
       const updatedCart  = await cartsDAO.updateCart({ _id: cid }, {products: cartUpdate});
       return updatedCart ;
   } catch (error) {
-      throw new Error('Error updating cart in database');
+      throw new Error (`Failed to find cart. ${err}`);
     }
   }
   async updateProductQuantity(cartId, productId, quantity) {
@@ -59,7 +60,7 @@ class ServiceCarts {
       const cart = await cartsDAO.getCart(cartId);
       const productIndex = cart.products.findIndex((p) => p.product.toString() === productId);
       if (productIndex === -1) {
-          throw new Error('Product not found in cart');
+          throw new Error ('Product not found in cart');
       }
       cart.products[productIndex].quantity = quantity;
       await cart.save();
@@ -82,7 +83,7 @@ class ServiceCarts {
       const updatedCart = await cartsDAO.deleteProductFromCart( { _id: cartId }, cart );            
       return updatedCart;
     } catch (error) {
-      throw (`Error deleting product from cart. ${err}`);
+      throw new Error (`Error deleting product from cart. ${err}`);
     }
   };
   async clearCartService(cid) {
@@ -90,7 +91,7 @@ class ServiceCarts {
       const emptyCart = await cartsDAO.emptyCart( { _id: cid } );      
       return emptyCart;      
     }catch (error) {
-      throw (`Failed to find cart. ${err}`);
+      throw new Error (`Failed to find cart. ${err}`);
     }
   };
 };

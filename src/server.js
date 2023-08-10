@@ -1,4 +1,4 @@
-/* -------IMPORTS-------*/
+/* -------------IMPORTS-------------*/
 import MongoStore from 'connect-mongo';
 import express from 'express'
 import exphbs from "express-handlebars";
@@ -21,6 +21,8 @@ import initPassport from "./config/passport.config.js";
 import "./config/passport.config.js";
 import { __dirname } from "./config.js"; //HAY QUE CAMBIAR ESTO
 import config from "./config/config.js";
+
+import errorHandler from "./middleware/error.js";
 
 /*-------CONFIG BASICAS Y CONEXION A BD-------*/
 const app = express();
@@ -90,3 +92,5 @@ app.use("/api/sessions", sessionsRouter);
 app.get('/*', async (req, res) => {
   res.render("notfound");
 })
+/*-------Error handler-------*/
+app.use(errorHandler);

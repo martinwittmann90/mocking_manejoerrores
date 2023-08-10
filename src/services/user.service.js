@@ -16,7 +16,7 @@ class ServiceUsers {
             return { code: 201, result: { status: "success", message: "User created successfully", payload: user } };
         }
         catch (error) {
-            return { code: 400, result: { status: "error", message: "Error adding user" } };
+            throw(`Error adding User. ${err}`);
         }
     }
     async login(email, password) {
@@ -33,7 +33,7 @@ class ServiceUsers {
             }
         }
         catch (error) {
-            return { code: 400, result: { status: "error", message: "Error logging in" } };
+            throw(`Error logging in. ${err}`);
         }
     }
 }

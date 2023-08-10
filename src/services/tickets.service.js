@@ -17,7 +17,7 @@ class ServiceTickets {
         const savedTicket = await ticketsDAO.addTicket(ticketData);
         return savedTicket;
         } catch (error) {
-        throw (`Service tickets failure`);
+        throw (`Service tickets failure. ${error}`);
         }
     }
     async  stockCartProductsForTicket(cartId) {
